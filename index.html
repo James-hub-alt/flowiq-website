@@ -47,7 +47,7 @@
   "logo": "https://flowiq-website-tau.vercel.app/assets/flowiq-logo.png",
   "image": "https://flowiq-website-tau.vercel.app/assets/og-image.png",
   "description": "FlowIQ diagnoses how a small or medium business actually runs, then builds the exact system it needs: custom websites, internal tools, and workflow automation. Founded by James Russwurm.",
-  "email": "hello@flowiq.co.za",
+  "email": "hello@flowiq.pro",
   "areaServed": { "@type": "Country", "name": "South Africa" },
   "priceRange": "R5,000 - R85,000+",
   "founder": {
@@ -302,11 +302,15 @@
                   </sc-if>
                 </label>
               </sc-for>
-              <button type="submit" style="{{ serviceFormSubmitStyle }}">Send to hello@flowiq.co.za →</button>
+              <input value="{{ honeypot }}" onChange="{{ updateHoneypot }}" style="{{ honeypotStyle }}" type="text" name="company_url" tabindex="-1" autocomplete="off">
+              <button type="submit" style="{{ serviceFormSubmitStyle }}">{{ activeServiceForm.submitLabel }}</button>
+              <sc-if value="{{ activeServiceForm.error }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ serviceFormErrorStyle }}">{{ activeServiceForm.error }}</div>
+              </sc-if>
             </form>
           </sc-if>
           <sc-if value="{{ activeServiceFormSent }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ serviceFormSentStyle }}">Opening your email client with this enquiry, addressed to hello@flowiq.co.za.</div>
+            <div style="{{ serviceFormSentStyle }}">Thanks — that's on its way to hello@flowiq.pro. We'll get back to you shortly.</div>
           </sc-if>
         </div>
       </sc-if>
@@ -388,7 +392,11 @@
               <label style="{{ labelStyle }}">What are you trying to fix?
                 <textarea required="" value="{{ formData.message }}" onChange="{{ updateMessage }}" style="{{ textareaStyle }}"></textarea>
               </label>
-              <button type="submit" style="{{ submitBtnStyle }}">Send it over →</button>
+              <input value="{{ honeypot }}" onChange="{{ updateHoneypot }}" style="{{ honeypotStyle }}" type="text" name="company_url" tabindex="-1" autocomplete="off">
+              <button type="submit" style="{{ submitBtnStyle }}">{{ submitBtnLabel }}</button>
+              <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ formErrorStyle }}">{{ formError }}</div>
+              </sc-if>
             </form>
           </sc-if>
           <sc-if value="{{ formSubmitted }}" hint-placeholder-val="{{ false }}">
@@ -400,7 +408,7 @@
         </div>
         <div style="{{ contactInfoColStyle }}">
           <div style="{{ contactInfoLabelStyle }}">Direct</div>
-          <a href="mailto:hello@flowiq.co.za" style="{{ contactInfoLinkStyle }}">hello@flowiq.co.za</a>
+          <a href="mailto:hello@flowiq.pro" style="{{ contactInfoLinkStyle }}">hello@flowiq.pro</a>
           
           
           <div style="{{ contactDividerStyle }}"></div>
@@ -445,6 +453,9 @@ class Component extends DCLogic {
     faqOpenIndex: 0,
     formData: { name: '', email: '', message: '' },
     formSubmitted: false,
+    formSending: false,
+    formError: null,
+    honeypot: '',
     activeServiceKey: null,
     calloutIndex: 0,
     serviceFormData: {
@@ -452,7 +463,9 @@ class Component extends DCLogic {
       'custom-website': { name: '', email: '', company: '', siteType: 'Single page', existingSite: '', timeline: '' },
       'business-tools': { name: '', email: '', company: '', track: '', teamSize: '' }
     },
-    serviceFormSent: { 'systems-review': false, 'custom-website': false, 'business-tools': false }
+    serviceFormSent: { 'systems-review': false, 'custom-website': false, 'business-tools': false },
+    serviceFormSending: { 'systems-review': false, 'custom-website': false, 'business-tools': false },
+    serviceFormError: { 'systems-review': null, 'custom-website': null, 'business-tools': null }
   };
 
   sectionEls = {};
@@ -587,10 +600,36 @@ class Component extends DCLogic {
   updateName = (e) => this.updateField('name', e.target.value);
   updateEmail = (e) => this.updateField('email', e.target.value);
   updateMessage = (e) => this.updateField('message', e.target.value);
+  updateHoneypot = (e) => this.setState({ honeypot: e.target.value });
 
-  handleSubmit = (e) => {
+  submitToServer = async (payload) => {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* ignore */ }
+    if (!res.ok || !data || !data.ok) throw new Error((data && data.error) || 'Failed to send');
+  };
+
+  handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({ formSubmitted: true });
+    if (this.state.formSending) return;
+    const { name, email, message } = this.state.formData;
+    this.setState({ formSending: true, formError: null });
+    try {
+      await this.submitToServer({
+        formType: 'Contact form',
+        subject: 'New contact form enquiry — FlowIQ website',
+        replyTo: email,
+        website: this.state.honeypot,
+        fields: { Name: name, Email: email, 'What are you trying to fix?': message }
+      });
+      this.setState({ formSubmitted: true, formSending: false });
+    } catch (err) {
+      this.setState({ formSending: false, formError: "Something went wrong sending that. Please email hello@flowiq.pro directly." });
+    }
   };
 
   serviceFormDefs = {
@@ -636,15 +675,35 @@ class Component extends DCLogic {
     serviceFormData: { ...s.serviceFormData, [key]: { ...s.serviceFormData[key], [fieldKey]: val } }
   }));
 
-  submitServiceForm = (key) => (e) => {
+  submitServiceForm = (key) => async (e) => {
     e.preventDefault();
+    if (this.state.serviceFormSending[key]) return;
     const def = this.serviceFormDefs[key];
     const data = this.state.serviceFormData[key];
-    const bodyLines = def.fields.map((f) => `${f.label}: ${data[f.key] || ''}`);
-    const body = encodeURIComponent(bodyLines.join('\n'));
-    const subject = encodeURIComponent(def.subjectLine);
-    window.location.href = `mailto:hello@flowiq.co.za?subject=${subject}&body=${body}`;
-    this.setState((s) => ({ serviceFormSent: { ...s.serviceFormSent, [key]: true } }));
+    const fields = {};
+    def.fields.forEach((f) => { fields[f.label] = data[f.key] || ''; });
+    this.setState((s) => ({
+      serviceFormSending: { ...s.serviceFormSending, [key]: true },
+      serviceFormError: { ...s.serviceFormError, [key]: null }
+    }));
+    try {
+      await this.submitToServer({
+        formType: def.title,
+        subject: def.subjectLine,
+        replyTo: data.email,
+        website: this.state.honeypot,
+        fields
+      });
+      this.setState((s) => ({
+        serviceFormSent: { ...s.serviceFormSent, [key]: true },
+        serviceFormSending: { ...s.serviceFormSending, [key]: false }
+      }));
+    } catch (err) {
+      this.setState((s) => ({
+        serviceFormSending: { ...s.serviceFormSending, [key]: false },
+        serviceFormError: { ...s.serviceFormError, [key]: "Something went wrong sending that. Please email hello@flowiq.pro directly." }
+      }));
+    }
   };
 
   sectionDefs = [
@@ -809,9 +868,14 @@ class Component extends DCLogic {
     const activeDef = activeServiceKey ? this.serviceFormDefs[activeServiceKey] : null;
     const activeData = activeServiceKey ? this.state.serviceFormData[activeServiceKey] : null;
     const activeSent = activeServiceKey ? this.state.serviceFormSent[activeServiceKey] : false;
+    const activeSending = activeServiceKey ? this.state.serviceFormSending[activeServiceKey] : false;
+    const activeFormError = activeServiceKey ? this.state.serviceFormError[activeServiceKey] : null;
     const activeServiceForm = activeDef ? {
       title: activeDef.title,
       onSubmit: this.submitServiceForm(activeServiceKey),
+      sending: activeSending,
+      error: activeFormError,
+      submitLabel: activeSending ? 'Sending…' : 'Send to hello@flowiq.pro →',
       fields: activeDef.fields.map((f) => ({
         key: f.key,
         label: f.label,
@@ -884,10 +948,16 @@ class Component extends DCLogic {
       formData: this.state.formData,
       formSubmitted: this.state.formSubmitted,
       formNotSubmitted: !this.state.formSubmitted,
+      formSending: this.state.formSending,
+      formError: this.state.formError,
+      submitBtnLabel: this.state.formSending ? 'Sending…' : 'Send it over →',
+      honeypot: this.state.honeypot,
+      updateHoneypot: this.updateHoneypot,
+      honeypotStyle: { position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0, pointerEvents: 'none' },
       railSections,
       services,
       hasActiveServiceForm: !!activeServiceForm,
-      activeServiceForm: activeServiceForm || { title: '', fields: [], onSubmit: () => {} },
+      activeServiceForm: activeServiceForm || { title: '', fields: [], onSubmit: () => {}, sending: false, error: null, submitLabel: 'Send to hello@flowiq.pro →' },
       activeServiceFormNotSent: !!activeServiceForm && !activeSent,
       activeServiceFormSent: !!activeServiceForm && !!activeSent,
       closeServiceForm: this.closeServiceForm,
@@ -1041,6 +1111,7 @@ class Component extends DCLogic {
       serviceInputStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '12px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none', marginTop: 6, width: '100%' },
       serviceFormSubmitStyle: { gridColumn: '1 / -1', marginTop: 4, background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 12, padding: '14px 22px', fontSize: 15, fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-start', justifySelf: 'flex-start' },
       serviceFormSentStyle: { color: 'rgba(255,255,255,0.8)', fontSize: 15, lineHeight: 1.6 },
+      serviceFormErrorStyle: { color: '#FFB4B4', fontSize: 13, lineHeight: 1.5, marginTop: 8 },
 
       proofStyle: { background: C.white, position: 'relative' },
       proofCornerBeforeStyle: { content: '""', position: 'absolute', top: 10, left: 10, width: 12, height: 12, borderTop: `2px solid ${C.deep}`, borderLeft: `2px solid ${C.deep}`, opacity: 0.35 },
@@ -1084,6 +1155,7 @@ class Component extends DCLogic {
       inputStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '14px 16px', color: '#fff', fontSize: 15, fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.25s ease, background 0.25s ease' },
       textareaStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '14px 16px', color: '#fff', fontSize: 15, fontFamily: 'inherit', minHeight: 110, resize: 'vertical', outline: 'none', transition: 'border-color 0.25s ease, background 0.25s ease' },
       submitBtnStyle: { marginTop: 6, background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 12, padding: '16px 24px', fontSize: 16, fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-start', boxShadow: '0 8px 26px rgba(34,100,172,0.4)', transition: 'transform 0.3s ease' },
+      formErrorStyle: { color: '#C0392B', fontSize: 13, lineHeight: 1.5 },
       formSuccessStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 16, padding: '40px 32px' },
       formSuccessTitleStyle: { fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 10 },
       formSuccessTextStyle: { fontSize: 15.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 },
