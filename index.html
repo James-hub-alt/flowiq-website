@@ -241,7 +241,7 @@
         <sc-for list="{{ proofItems }}" as="p" hint-placeholder-count="3">
           <div style="{{ proofCardStyle }}" style-hover="{{ proofCardHoverStyle }}" style-before="{{ proofCornerBeforeStyle }}" style-after="{{ proofCornerAfterStyle }}">
             <div style="{{ proofThumbWrapStyle }}">
-              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.thumbId }}" shape="rect" fit="{{ p.thumbFit }}" placeholder="{{ p.thumbPlaceholder }}" hint-size="100%,100%"></x-import>
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.thumbId }}" shape="rect" fit="{{ p.thumbFit }}" src="{{ p.thumbSrc }}" placeholder="{{ p.thumbPlaceholder }}" hint-size="100%,100%"></x-import>
             </div>
             <div style="{{ p.tagStyle }}">{{ p.tag }}</div>
             <h3 style="{{ proofTitleStyle }}">{{ p.name }}</h3>
@@ -625,21 +625,24 @@ class Component extends DCLogic {
       tag: 'nxtgrp.net',
       url: 'https://nxtgrp.net',
       linkLabel: 'Visit the site',
-      desc: 'A fully custom React/Next.js build: animated stat counters, tabbed services, sticky scroll interactions, no template in sight.'
+      desc: 'A fully custom React/Next.js build: animated stat counters, tabbed services, sticky scroll interactions, no template in sight.',
+      thumbSrc: 'assets/proof-nextgroup.webp'
     },
     {
       name: 'SlipSync',
       tag: 'slipsync.co.za',
       url: 'https://slipsync.co.za',
       linkLabel: 'Visit the site',
-      desc: 'A live SaaS product: receipt capture and automatic VAT calculation for South African freelancers and small contractors.'
+      desc: 'A live SaaS product: receipt capture and automatic VAT calculation for South African freelancers and small contractors.',
+      thumbSrc: 'assets/proof-slipsync.webp'
     },
     {
       name: 'RealtyAI',
       tag: 'realtyai.co.za (retired)',
       url: 'https://realtyai.co.za',
       linkLabel: 'Visit the site',
-      desc: 'An AI lead-qualification assistant for SA estate agents. Tested in market and retired: agents were too price-sensitive to convert. We read the market accurately, including when it says no.'
+      desc: 'An AI lead-qualification assistant for SA estate agents. Tested in market and retired: agents were too price-sensitive to convert. We read the market accurately, including when it says no.',
+      thumbSrc: 'assets/proof-realtyai.webp'
     }
   ];
 
