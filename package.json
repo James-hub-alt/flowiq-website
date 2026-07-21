@@ -1,7 +1,0 @@
-{
-  "name": "flowiq-website",
-  "private": true,
-  "engines": {
-    "node": "20.x"
-  }
-}

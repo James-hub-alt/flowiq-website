@@ -602,15 +602,24 @@ class Component extends DCLogic {
   updateMessage = (e) => this.updateField('message', e.target.value);
   updateHoneypot = (e) => this.setState({ honeypot: e.target.value });
 
+  WEB3FORMS_ACCESS_KEY = '6ada6eb0-aa12-476f-9480-37bc883f8d06';
+
   submitToServer = async (payload) => {
-    const res = await fetch('/api/contact', {
+    const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: this.WEB3FORMS_ACCESS_KEY,
+        subject: payload.subject,
+        from_name: (payload.fields && payload.fields.Name) || 'FlowIQ website visitor',
+        replyto: payload.replyTo || undefined,
+        botcheck: payload.website || '',
+        ...payload.fields
+      })
     });
     let data = null;
     try { data = await res.json(); } catch (e) { /* ignore */ }
-    if (!res.ok || !data || !data.ok) throw new Error((data && data.error) || 'Failed to send');
+    if (!res.ok || !data || data.success !== true) throw new Error((data && data.message) || 'Failed to send');
   };
 
   handleSubmit = async (e) => {
