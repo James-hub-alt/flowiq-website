@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    ::selection { background: #57ACDF; color: #0B1624; }
+    @keyframes flowiq-drift-a {
+      0% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(40px, -30px) scale(1.08); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    @keyframes flowiq-drift-b {
+      0% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(-50px, 40px) scale(1.12); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    @keyframes flowiq-pulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+    @keyframes flowiq-fadeup {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</helmet>
+
+<div style="{{ rootStyle }}">
+
+  <!-- FLOW PATH (desktop only, spans the full page) -->
+  <sc-if value="{{ showRail }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ flowWrapStyle }}">
+      <svg width="100%" height="{{ flowHeight }}" viewBox="{{ flowViewBox }}" preserveAspectRatio="none" style="overflow:visible; display:block;">
+        <defs>
+          <filter id="flowDotGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="blur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+        </defs>
+        <path d="{{ flowPathD }}" stroke="{{ flowPathColor }}" stroke-width="2" fill="none" stroke-dasharray="5 9"></path>
+        <path ref="{{ flowPathRef }}" d="{{ flowPathD }}" stroke="transparent" stroke-width="2" fill="none"></path>
+        <circle ref="{{ flowDotRef }}" r="8" fill="#2264AC" stroke="#fff" stroke-width="2.5" filter="url(#flowDotGlow)"></circle>
+        <sc-for list="{{ flowPoints }}" as="pt" hint-placeholder-count="6">
+          <circle cx="{{ pt.x }}" cy="{{ pt.y }}" r="{{ pt.radius }}" fill="{{ pt.fill }}" stroke="{{ pt.stroke }}" stroke-width="2" onClick="{{ pt.onClick }}" style="{{ flowNodeStyle }}"></circle>
+        </sc-for>
+      </svg>
+    </div>
+  </sc-if>
+
+  <!-- NAV -->
+  <div ref="{{ navRef }}" style="{{ navStyle }}">
+    <div style="{{ navInnerStyle }}">
+      <div onClick="{{ scrollToHero }}" style="{{ navLogoWrapStyle }}">
+        <div style="{{ navLogoChipStyle }}">
+          <img src="assets/flowiq-logo.png" alt="FlowIQ" style="width: 129px; height: 46px">
+        </div>
+      </div>
+
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ navLinksStyle }}">
+          <sc-for list="{{ railSections }}" as="sec" hint-placeholder-count="6">
+            <a onClick="{{ sec.onClick }}" href="{{ sec.href }}" style="{{ sec.navLinkStyle }}" style-hover="{{ navLinkHoverStyle }}">{{ sec.label }}</a>
+          </sc-for>
+          <button onClick="{{ scrollToContact }}" style="{{ navCtaStyle }}">Book a Review</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button aria-label="Menu" onClick="{{ toggleMobileMenu }}" style="{{ hamburgerBtnStyle }}">
+          <span style="{{ burgerBar0Style }}"></span>
+          <span style="{{ burgerBar1Style }}"></span>
+          <span style="{{ burgerBar2Style }}"></span>
+        </button>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ mobileMenuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ mobileMenuStyle }}">
+        <sc-for list="{{ railSections }}" as="sec" hint-placeholder-count="6">
+          <a onClick="{{ sec.onClick }}" href="{{ sec.href }}" style="{{ mobileLinkStyle }}">{{ sec.label }}</a>
+        </sc-for>
+        <button onClick="{{ scrollToContact }}" style="{{ mobileNavCtaStyle }}">Book a Review</button>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- HERO -->
+  <section data-screen-label="Home" id="hero" ref="{{ heroSectionRef }}" style="{{ heroStyle }}">
+    <div style="{{ heroBgImageWrapStyle }}">
+      <img src="assets/stock-hero-desk.png" alt="" style="{{ heroBgImageImgStyle }}">
+    </div>
+    <div style="{{ heroBgOverlayStyle }}"></div>
+    <div style="{{ heroBlobA }}"></div>
+    <div style="{{ heroBlobB }}"></div>
+    <div style="{{ heroContentStyle }}">
+      <div style="{{ heroEyebrowRevealStyle }}"><span style="{{ heroEyebrowTickStyle }}"></span>Systems &amp; software for SMBs, built by people, not templates</div>
+      <h1 style="{{ heroHeadlineRevealStyle }}">We diagnose <span style="{{ heroHeadlineAccent }}">before</span> we build.</h1>
+      <p style="{{ heroSubRevealStyle }}">FlowIQ reads how your business actually runs (the paper trails, the spreadsheets, the workarounds), then builds the exact system it needs. A website, an internal tool, a workflow. Something you own outright, not another subscription.</p>
+      <div style="{{ heroCtaRowRevealStyle }}">
+        <button onClick="{{ scrollToContact }}" style="{{ heroPrimaryBtnStyle }}" style-hover="{{ heroPrimaryBtnHoverStyle }}">Book a Systems Review</button>
+        <button onClick="{{ scrollToProof }}" style="{{ heroSecondaryBtnStyle }}" style-hover="{{ heroSecondaryBtnHoverStyle }}">See the proof ↓</button>
+      </div>
+    </div>
+    <div onClick="{{ scrollToWhy }}" style="{{ scrollCueStyle }}">
+      <span style="{{ scrollCueDotStyle }}"></span>
+    </div>
+  </section>
+
+  <!-- WHY FLOWIQ -->
+  <section data-screen-label="Why FlowIQ" id="why" ref="{{ whySectionRef }}" style="{{ whyStyle }}">
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ whyEyebrowRevealStyle }}">Why FlowIQ</div>
+      <h2 style="{{ whyH2RevealStyle }}">Run by someone who has actually run the operational side.</h2>
+      <div style="{{ whyGridStyle }}">
+        <div style="{{ whyTextColRevealStyle }}">
+          <p style="{{ bodyLightStyle }}">FlowIQ is founded by <strong>James Russwurm</strong>, a built-environment consultant whose background is in design, costing, project and operations management at NEXT Group, not software or marketing.</p>
+          <p style="{{ bodyLightStyle }}">Most people building "AI solutions for SMBs" right now have never run a business under real cost and time pressure. James has. That's why FlowIQ starts with a diagnosis, not a technology pitch.</p>
+          <div style="{{ founderRowStyle }}">
+            <img src="assets/james-russwurm.png" alt="James Russwurm, founder of FlowIQ" style="{{ founderPhotoStyle }}">
+            <div>
+              <div style="{{ founderNameStyle }}">James Russwurm</div>
+              <div style="{{ founderTitleStyle }}">Founder, FlowIQ</div>
+            </div>
+            <a href="https://www.linkedin.com/in/james-michael-russwurm/" target="_blank" rel="noopener" style="{{ founderLinkedinBtnStyle }}" style-hover="{{ founderLinkedinBtnHoverStyle }}">LinkedIn ↗</a>
+          </div>
+          <button onClick="{{ scrollToContact }}" style="{{ whyCtaStyle }}" style-hover="{{ whyCtaHoverStyle }}">Talk to us about your process →</button>
+        </div>
+        <div style="{{ whyCalloutCardRevealStyle }}">
+          <div style="{{ calloutThumbWrapStyle }}">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="why-callout-shot" shape="rect" src="assets/stock-callout-sketch.png" placeholder="Drop a photo" hint-size="100%,100%"></x-import>
+          </div>
+          <div style="{{ calloutLabelRowStyle }}">
+            <div style="{{ calloutLabelStyle }}">The diagnosis, in miniature</div>
+            <div style="{{ calloutDotsStyle }}">
+              <sc-for list="{{ calloutDots }}" as="d" hint-placeholder-count="3">
+                <span onClick="{{ d.onClick }}" style="{{ d.dotStyle }}"></span>
+              </sc-for>
+            </div>
+          </div>
+          <div onTouchStart="{{ calloutTouchStart }}" onTouchEnd="{{ calloutTouchEnd }}" style="{{ calloutScenarioWrapStyle }}">
+            <p style="{{ calloutTextStyle }}">{{ activeScenario.text }}</p>
+            <p style="{{ calloutFootStyle }}">{{ activeScenario.foot }}</p>
+          </div>
+          <div style="{{ calloutNavRowStyle }}">
+            <button onClick="{{ calloutPrev }}" style="{{ calloutNavBtnStyle }}" aria-label="Previous scenario">←</button>
+            <span style="{{ calloutCounterStyle }}">{{ calloutCounterLabel }}</span>
+            <button onClick="{{ calloutNext }}" style="{{ calloutNavBtnStyle }}" aria-label="Next scenario">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section data-screen-label="Services" id="services" ref="{{ servicesSectionRef }}" style="{{ servicesStyle }}">
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ servicesEyebrowRevealStyle }}">Services</div>
+      <h2 style="{{ servicesH2RevealStyle }}">Diagnose. Build. Own.</h2>
+      <p style="{{ servicesLeadRevealStyle }}">Three service lines, one value chain. Enter wherever makes sense; most people start with the Review.</p>
+
+      <div style="{{ servicesGridStyle }}">
+        <sc-for list="{{ services }}" as="svc" hint-placeholder-count="3">
+          <div style="{{ svc.cardStyle }}" style-hover="{{ serviceCardHoverStyle }}">
+            <div style="{{ serviceStepStyle }}">{{ svc.step }}</div>
+            <div style="{{ serviceIconStyle }}">{{ svc.icon }}</div>
+            <h3 style="{{ serviceTitleStyle }}">{{ svc.title }}</h3>
+            <p style="{{ serviceDescStyle }}">{{ svc.desc }}</p>
+            <div style="{{ servicePriceStyle }}">{{ svc.price }}</div>
+            <div style="{{ serviceNoteStyle }}">{{ svc.note }}</div>
+            <button onClick="{{ svc.onGetStarted }}" style="{{ svc.ctaStyle }}" style-hover="{{ serviceCtaHoverStyle }}">{{ svc.ctaLabel }}</button>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ hasActiveServiceForm }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ serviceFormPanelStyle }}">
+          <div style="{{ serviceFormHeaderRowStyle }}">
+            <div>
+              <div style="{{ serviceFormEyebrowStyle }}">Enquiry</div>
+              <h3 style="{{ serviceFormTitleStyle }}">{{ activeServiceForm.title }}</h3>
+            </div>
+            <button onClick="{{ closeServiceForm }}" style="{{ serviceFormCloseStyle }}">✕</button>
+          </div>
+          <sc-if value="{{ activeServiceFormNotSent }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ activeServiceForm.onSubmit }}" style="{{ serviceFormGridStyle }}">
+              <sc-for list="{{ activeServiceForm.fields }}" as="fld" hint-placeholder-count="4">
+                <label style="{{ fld.wrapStyle }}">
+                  {{ fld.label }}
+                  <sc-if value="{{ fld.isTextarea }}" hint-placeholder-val="{{ false }}">
+                    <textarea value="{{ fld.value }}" onChange="{{ fld.onChange }}" style="{{ serviceInputStyle }}"></textarea>
+                  </sc-if>
+                  <sc-if value="{{ fld.isSelect }}" hint-placeholder-val="{{ false }}">
+                    <select value="{{ fld.value }}" onChange="{{ fld.onChange }}" style="{{ serviceInputStyle }}">
+                      <sc-for list="{{ fld.options }}" as="opt" hint-placeholder-count="3">
+                        <option value="{{ opt }}">{{ opt }}</option>
+                      </sc-for>
+                    </select>
+                  </sc-if>
+                  <sc-if value="{{ fld.isText }}" hint-placeholder-val="{{ true }}">
+                    <input value="{{ fld.value }}" onChange="{{ fld.onChange }}" style="{{ serviceInputStyle }}" type="text">
+                  </sc-if>
+                </label>
+              </sc-for>
+              <button type="submit" style="{{ serviceFormSubmitStyle }}">Send to hello@flowiq.co.za →</button>
+            </form>
+          </sc-if>
+          <sc-if value="{{ activeServiceFormSent }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ serviceFormSentStyle }}">Opening your email client with this enquiry, addressed to hello@flowiq.co.za.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <div style="{{ servicesOwnStripRevealStyle }}">
+        <div style="{{ ownStripTextStyle }}"><strong style="{{ highlightSkyStyle }}">You own everything above, outright.</strong> No forced subscription. No vendor lock-in. No SaaS fatigue.</div>
+        <button onClick="{{ scrollToContact }}" style="{{ ownStripCtaStyle }}" style-hover="{{ ownStripCtaHoverStyle }}">Ask us anything →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section data-screen-label="Proof" id="proof" ref="{{ proofSectionRef }}" style="{{ proofStyle }}">
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ proofEyebrowRevealStyle }}">Proof, not promises</div>
+      <h2 style="{{ proofH2RevealStyle }}">Everything here is real, and everything is checkable.</h2>
+      <div style="{{ proofGridStyle }}">
+        <sc-for list="{{ proofItems }}" as="p" hint-placeholder-count="3">
+          <div style="{{ proofCardStyle }}" style-hover="{{ proofCardHoverStyle }}" style-before="{{ proofCornerBeforeStyle }}" style-after="{{ proofCornerAfterStyle }}">
+            <div style="{{ proofThumbWrapStyle }}">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.thumbId }}" shape="rect" fit="{{ p.thumbFit }}" placeholder="{{ p.thumbPlaceholder }}" hint-size="100%,100%"></x-import>
+            </div>
+            <div style="{{ p.tagStyle }}">{{ p.tag }}</div>
+            <h3 style="{{ proofTitleStyle }}">{{ p.name }}</h3>
+            <p style="{{ proofDescStyle }}">{{ p.desc }}</p>
+            <sc-if value="{{ p.showLink }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ p.url }}" target="_blank" rel="noopener" style="{{ proofLinkStyle }}" style-hover="{{ proofLinkHoverStyle }}">{{ p.linkLabel }} →</a>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="{{ proofCtaRowStyle }}">
+        <button onClick="{{ scrollToContact }}" style="{{ proofCtaStyle }}" style-hover="{{ proofCtaHoverStyle }}">Have a project like this? Let's talk →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section data-screen-label="FAQ" id="faq" ref="{{ faqSectionRef }}" style="{{ faqStyle }}">
+    <div style="{{ sectionInnerNarrowStyle }}">
+      <div style="{{ faqEyebrowRevealStyle }}">FAQ</div>
+      <h2 style="{{ faqH2RevealStyle }}">Straight answers, <span style="{{ faqH2AccentStyle }}">nothing padded.</span></h2>
+      <div style="{{ faqListStyle }}">
+        <sc-for list="{{ faqItems }}" as="f" hint-placeholder-count="6">
+          <div style="{{ faqItemStyle }}">
+            <div onClick="{{ f.onToggle }}" style="{{ faqQStyle }}" style-hover="{{ faqQHoverStyle }}">
+              <span>{{ f.q }}</span>
+              <span style="{{ f.iconStyle }}">+</span>
+            </div>
+            <div style="{{ f.aStyle }}">
+              <div style="{{ faqAInnerStyle }}">{{ f.a }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="{{ faqCtaRowStyle }}">
+        <span style="{{ faqCtaTextStyle }}">Still have questions?</span>
+        <button onClick="{{ scrollToContact }}" style="{{ faqCtaBtnStyle }}" style-hover="{{ faqCtaBtnHoverStyle }}">Get in touch →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section data-screen-label="Contact" id="contact" ref="{{ contactSectionRef }}" style="{{ contactStyle }}">
+    <div style="{{ contactBlobA }}"></div>
+    <div style="{{ sectionInnerStyle }}">
+      <div style="{{ contactEyebrowRevealStyle }}">Contact</div>
+      <h2 style="{{ contactH2RevealStyle }}">Tell us how your business actually runs.</h2>
+      <div style="{{ contactGridStyle }}">
+        <div style="{{ contactFormWrapRevealStyle }}">
+          <sc-if value="{{ formNotSubmitted }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ handleSubmit }}" style="{{ formStyle }}">
+              <label style="{{ labelStyle }}">Name
+                <input required="" value="{{ formData.name }}" onChange="{{ updateName }}" style="{{ inputStyle }}" type="text">
+              </label>
+              <label style="{{ labelStyle }}">Email
+                <input required="" value="{{ formData.email }}" onChange="{{ updateEmail }}" style="{{ inputStyle }}" type="email">
+              </label>
+              <label style="{{ labelStyle }}">What are you trying to fix?
+                <textarea required="" value="{{ formData.message }}" onChange="{{ updateMessage }}" style="{{ textareaStyle }}"></textarea>
+              </label>
+              <button type="submit" style="{{ submitBtnStyle }}">Send it over →</button>
+            </form>
+          </sc-if>
+          <sc-if value="{{ formSubmitted }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ formSuccessStyle }}">
+              <div style="{{ formSuccessTitleStyle }}">Got it.</div>
+              <p style="{{ formSuccessTextStyle }}">We'll come back to you shortly, with questions, not a sales script.</p>
+            </div>
+          </sc-if>
+        </div>
+        <div style="{{ contactInfoColStyle }}">
+          <div style="{{ contactInfoLabelStyle }}">Direct</div>
+          <a href="mailto:hello@flowiq.co.za" style="{{ contactInfoLinkStyle }}">hello@flowiq.co.za</a>
+          
+          
+          <div style="{{ contactDividerStyle }}"></div>
+          <div style="{{ contactInfoLabelStyle }}">Fastest way in</div>
+          <p style="{{ contactInfoTextStyle }}">Book a Systems Review. Fixed fee, one written recommendation, 50% credited toward a Build if you sign within 60 days.</p>
+        </div>
+      </div>
+    </div>
+    <div style="{{ footerStyle }}">
+      <div style="{{ footerLogoChipStyle }}">
+        <img src="assets/flowiq-logo.png" alt="FlowIQ" style="{{ footerLogoImgStyle }}">
+      </div>
+      <div style="{{ footerTextStyle }}">© 2026 FlowIQ. Systems and software for small and medium businesses.</div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;showFlowRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;defaultOpenFaq&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;min&quot;:-1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+
+  COLORS = {
+    deep: '#2264AC',
+    sky: '#57ACDF',
+    ink: '#1C2733',
+    mute: '#5B6670',
+    navy: '#0B1624',
+    navy2: '#0F1F33',
+    white: '#FFFFFF',
+    offwhite: '#F6F8FB',
+    border: 'rgba(28,39,51,0.1)',
+    borderDark: 'rgba(255,255,255,0.12)'
+  };
+
+  state = {
+    isMobile: (typeof window !== 'undefined' && window.innerWidth < 900),
+    scrolled: false,
+    mobileMenuOpen: false,
+    activeId: 'hero',
+    revealed: {},
+    faqOpenIndex: 0,
+    formData: { name: '', email: '', message: '' },
+    formSubmitted: false,
+    activeServiceKey: null,
+    calloutIndex: 0,
+    serviceFormData: {
+      'systems-review': { name: '', email: '', company: '', pain: '' },
+      'custom-website': { name: '', email: '', company: '', siteType: 'Single page', existingSite: '', timeline: '' },
+      'business-tools': { name: '', email: '', company: '', track: '', teamSize: '' }
+    },
+    serviceFormSent: { 'systems-review': false, 'custom-website': false, 'business-tools': false }
+  };
+
+  sectionEls = {};
+  navRef = React.createRef();
+  flowPathRef = React.createRef();
+  flowDotRef = React.createRef();
+  _ticking = false;
+  _flowLen = 0;
+
+  state2Defaults = null;
+
+  componentDidMount() {
+    if (typeof this.props.defaultOpenFaq === 'number') this.setState({ faqOpenIndex: this.props.defaultOpenFaq });
+    this.setState({ revealed: { hero: true }, flowHeight: 1200, flowPoints: [] });
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
+    this.setupObserver();
+    this.handleScroll();
+    setTimeout(this.measureFlow, 250);
+    window.addEventListener('load', this.measureFlow);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('load', this.measureFlow);
+    if (this._observer) this._observer.disconnect();
+  }
+
+  measureFlow = () => {
+    const H = Math.max(document.documentElement.scrollHeight, 800);
+    const pts = this.sectionDefs.map((s, i) => {
+      const el = this.sectionEls[s.id];
+      const top = el ? Math.max(el.offsetTop + 60, i === 0 ? 150 : 0) : (H / this.sectionDefs.length) * i;
+      const x = 100 + (i % 2 === 0 ? -30 : 30);
+      return { id: s.id, label: s.label, x, y: top };
+    });
+    this.setState({ flowHeight: H, flowPoints: pts }, () => {
+      if (this.flowPathRef.current) this._flowLen = this.flowPathRef.current.getTotalLength();
+      this.handleScroll();
+    });
+  };
+
+  handleResize = () => {
+    const mobile = window.innerWidth < 900;
+    if (mobile !== this.state.isMobile) this.setState({ isMobile: mobile, mobileMenuOpen: false });
+    this.measureFlow();
+  };
+
+  buildFlowPath(points, height) {
+    if (!points || !points.length) return `M 100 0 L 100 ${height}`;
+    let d = `M ${points[0].x} 90 Q ${points[0].x} ${(90 + points[0].y) / 2} ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      const p0 = points[i - 1], p1 = points[i];
+      const midY = (p0.y + p1.y) / 2;
+      d += ` Q ${p0.x} ${midY} ${p1.x} ${p1.y}`;
+    }
+    const last = points[points.length - 1];
+    d += ` Q ${last.x} ${(last.y + height) / 2} ${last.x} ${height}`;
+    return d;
+  }
+
+  handleScroll = () => {
+    const run = () => {
+      const doc = document.documentElement;
+      const max = (doc.scrollHeight - window.innerHeight) || 1;
+      const progress = Math.min(1, Math.max(0, window.scrollY / max));
+      if (this.flowPathRef.current && this.flowDotRef.current) {
+        if (!this._flowLen) this._flowLen = this.flowPathRef.current.getTotalLength();
+        if (this._flowLen) {
+          const pt = this.flowPathRef.current.getPointAtLength(progress * this._flowLen);
+          this.flowDotRef.current.setAttribute('cx', pt.x);
+          this.flowDotRef.current.setAttribute('cy', pt.y);
+        }
+      }
+      const scrolled = window.scrollY > 40;
+      if (scrolled !== this.state.scrolled) this.setState({ scrolled });
+      if (this.navRef.current) {
+        this.navRef.current.style.background = scrolled ? 'rgba(11,22,36,0.72)' : 'transparent';
+        this.navRef.current.style.backdropFilter = scrolled ? 'blur(14px)' : 'none';
+        this.navRef.current.style.boxShadow = scrolled ? '0 1px 0 rgba(255,255,255,0.08)' : 'none';
+      }
+    };
+    run();
+  };
+
+  setupObserver() {
+    this._observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const id = entry.target.id;
+        if (entry.isIntersecting) {
+          this.setState((s) => ({ revealed: { ...s.revealed, [id]: true } }));
+          if (entry.intersectionRatio > 0.35) this.setState({ activeId: id });
+        }
+      });
+    }, { threshold: [0, 0.15, 0.35, 0.6], rootMargin: '-10% 0px -10% 0px' });
+    Object.values(this.sectionEls).forEach((el) => el && this._observer.observe(el));
+  }
+
+  setSectionRef = (id) => (el) => {
+    if (el && !this.sectionEls[id]) {
+      this.sectionEls[id] = el;
+      if (this._observer) this._observer.observe(el);
+    }
+  };
+
+  heroSectionRef = this.setSectionRef('hero');
+  whySectionRef = this.setSectionRef('why');
+  servicesSectionRef = this.setSectionRef('services');
+  proofSectionRef = this.setSectionRef('proof');
+  faqSectionRef = this.setSectionRef('faq');
+  contactSectionRef = this.setSectionRef('contact');
+
+  scrollToId = (id) => {
+    const el = this.sectionEls[id] || document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.setState({ mobileMenuOpen: false });
+  };
+
+  scrollToHero = () => this.scrollToId('hero');
+  scrollToWhy = () => this.scrollToId('why');
+  scrollToServices = () => this.scrollToId('services');
+  scrollToProof = () => this.scrollToId('proof');
+  scrollToFaq = () => this.scrollToId('faq');
+  scrollToContact = () => this.scrollToId('contact');
+
+  toggleMobileMenu = () => this.setState((s) => ({ mobileMenuOpen: !s.mobileMenuOpen }));
+
+  toggleFaq = (i) => this.setState((s) => ({ faqOpenIndex: s.faqOpenIndex === i ? -1 : i }));
+
+  updateField = (key, val) => this.setState((s) => ({ formData: { ...s.formData, [key]: val } }));
+  updateName = (e) => this.updateField('name', e.target.value);
+  updateEmail = (e) => this.updateField('email', e.target.value);
+  updateMessage = (e) => this.updateField('message', e.target.value);
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.setState({ formSubmitted: true });
+  };
+
+  serviceFormDefs = {
+    'systems-review': {
+      title: 'Book a Systems Review',
+      subjectLine: 'Systems Review enquiry',
+      fields: [
+        { key: 'name', label: 'Name', type: 'text' },
+        { key: 'email', label: 'Email', type: 'text' },
+        { key: 'company', label: 'Company', type: 'text' },
+        { key: 'pain', label: 'What\u2019s the biggest process pain point right now?', type: 'textarea' }
+      ]
+    },
+    'custom-website': {
+      title: 'Get a Custom Website Quote',
+      subjectLine: 'Custom Website enquiry',
+      fields: [
+        { key: 'name', label: 'Name', type: 'text' },
+        { key: 'email', label: 'Email', type: 'text' },
+        { key: 'company', label: 'Company', type: 'text' },
+        { key: 'siteType', label: 'What kind of site?', type: 'select', options: ['Single page', 'Multi-page', 'Not sure yet'] },
+        { key: 'existingSite', label: 'Existing website (if any)', type: 'text' },
+        { key: 'timeline', label: 'Ideal timeline', type: 'text' }
+      ]
+    },
+    'business-tools': {
+      title: 'Enquire About Business Tools',
+      subjectLine: 'Business Tools enquiry',
+      fields: [
+        { key: 'name', label: 'Name', type: 'text' },
+        { key: 'email', label: 'Email', type: 'text' },
+        { key: 'company', label: 'Company', type: 'text' },
+        { key: 'track', label: 'What do you need to track or manage?', type: 'textarea' },
+        { key: 'teamSize', label: 'Team size', type: 'text' }
+      ]
+    }
+  };
+
+  openServiceForm = (key) => this.setState({ activeServiceKey: key });
+  closeServiceForm = () => this.setState({ activeServiceKey: null });
+
+  updateServiceField = (key, fieldKey, val) => this.setState((s) => ({
+    serviceFormData: { ...s.serviceFormData, [key]: { ...s.serviceFormData[key], [fieldKey]: val } }
+  }));
+
+  submitServiceForm = (key) => (e) => {
+    e.preventDefault();
+    const def = this.serviceFormDefs[key];
+    const data = this.state.serviceFormData[key];
+    const bodyLines = def.fields.map((f) => `${f.label}: ${data[f.key] || ''}`);
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    const subject = encodeURIComponent(def.subjectLine);
+    window.location.href = `mailto:hello@flowiq.co.za?subject=${subject}&body=${body}`;
+    this.setState((s) => ({ serviceFormSent: { ...s.serviceFormSent, [key]: true } }));
+  };
+
+  sectionDefs = [
+    { id: 'hero', label: 'Home' },
+    { id: 'why', label: 'Why FlowIQ' },
+    { id: 'services', label: 'Services' },
+    { id: 'proof', label: 'Proof' },
+    { id: 'faq', label: 'FAQ' },
+    { id: 'contact', label: 'Contact' }
+  ];
+
+  serviceDefs = [
+    {
+      key: 'systems-review',
+      step: '01 · Diagnose',
+      icon: '◎',
+      title: 'Systems Review',
+      desc: 'A short, paid look at how your business runs. A real map of the process, plainly written: what\u2019s broken, what it\u2019s costing you, what would fix it.',
+      price: 'R5,000 – R7,500 flat',
+      note: '50% credits toward a Build if you sign within 60 days.'
+    },
+    {
+      key: 'custom-website',
+      step: '02 · Build',
+      icon: '◈',
+      title: 'Custom Websites',
+      desc: 'Fully custom-coded, no template, no site builder. Already proven, not a promise.',
+      price: 'R20,000 – R85,000+ \nproject fee',
+      note: 'Optional retainer, R1,500 – R2,500/month.'
+    },
+    {
+      key: 'business-tools',
+      step: '03 · Build',
+      icon: '◐',
+      title: 'Business Tools & Tracking',
+      desc: 'Time tracking, financial tracking, task assignment and reporting, built and running inside our own consultancy, now available to yours.',
+      price: 'Project fee, quoted per scope',
+      note: 'Built for our own consultancy first. Now available to yours.'
+    }
+  ];
+
+  calloutDefs = [
+    { text: 'A psychologist client was running a manual, paper-heavy admin process. Before any code was discussed, the recommendation was straightforward: online booking, calendar sync, automatic invoicing on session completion.', foot: 'Diagnose first. Build second. Every time.' },
+    { text: 'A retail client was doing stock takes by spreadsheet, with no reorder warnings until shelves were already empty. The fix wasn\u2019t more software features, it was a simple live stock count with automatic low-stock alerts.', foot: 'The right system is often the smaller one.' },
+    { text: 'A trades client was quoting over WhatsApp and invoicing on whatever scrap of paper was closest. We replaced the chaos with one structured flow: quote, approval, invoice, all logged in one place.', foot: 'Same business, half the admin.' }
+  ];
+
+  calloutTouchX = null;
+  calloutTouchStart = (e) => { this.calloutTouchX = e.touches && e.touches[0] ? e.touches[0].clientX : null; };
+  calloutTouchEnd = (e) => {
+    if (this.calloutTouchX == null || !e.changedTouches || !e.changedTouches[0]) return;
+    const dx = e.changedTouches[0].clientX - this.calloutTouchX;
+    if (dx < -40) this.calloutNext();
+    else if (dx > 40) this.calloutPrev();
+    this.calloutTouchX = null;
+  };
+  calloutGoTo = (i) => this.setState({ calloutIndex: (i + this.calloutDefs.length) % this.calloutDefs.length });
+  calloutNext = () => this.calloutGoTo(this.state.calloutIndex + 1);
+  calloutPrev = () => this.calloutGoTo(this.state.calloutIndex - 1);
+
+  proofDefs = [
+    {
+      name: 'NEXT Group',
+      tag: 'nxtgrp.net',
+      url: 'https://nxtgrp.net',
+      linkLabel: 'Visit the site',
+      desc: 'A fully custom React/Next.js build: animated stat counters, tabbed services, sticky scroll interactions, no template in sight.'
+    },
+    {
+      name: 'SlipSync',
+      tag: 'slipsync.co.za',
+      url: 'https://slipsync.co.za',
+      linkLabel: 'Visit the site',
+      desc: 'A live SaaS product: receipt capture and automatic VAT calculation for South African freelancers and small contractors.'
+    },
+    {
+      name: 'RealtyAI',
+      tag: 'realtyai.co.za (retired)',
+      url: 'https://realtyai.co.za',
+      linkLabel: 'Visit the site',
+      desc: 'An AI lead-qualification assistant for SA estate agents. Tested in market and retired: agents were too price-sensitive to convert. We read the market accurately, including when it says no.'
+    }
+  ];
+
+  faqDefs = [
+    { q: 'What exactly do I get from a Systems Review?', a: 'A discovery conversation, a written map of your current process, and a plain recommendation of what\u2019s broken, what it\u2019s costing you, and what system would fix it. Flat fee: R5,000–R7,500. If you sign a Build within 60 days, 50% of it credits toward that project.' },
+    { q: 'Do I own what you build?', a: 'Yes, outright. No forced subscription, no vendor lock-in. That\u2019s true across Systems Reviews, websites, and internal tools.' },
+    { q: 'What does a website cost?', a: 'From R35,000 for a single-page custom build up to R85,000+ for a multi-page, high-interaction build with full custom interactions. An optional retainer (R1,500–R2,500/month) covers hosting and updates, since there\u2019s no CMS and changes run through us.' },
+    { q: 'How fast is a build, really?', a: 'Faster than a traditional agency, since we build with AI-native tools rather than a multi-month timeline. Exact timing is quoted per scope once we\u2019ve diagnosed the work.' },
+    { q: 'Have you built tracking tools for other companies yet?', a: 'They\u2019re built and running inside NEXT Group today, our own consultancy, and we\u2019re now bringing that same system to outside clients for the first time.' },
+    { q: 'Why "diagnose before build"?', a: 'Because most agencies guess at requirements. FlowIQ\u2019s founder has managed real cost and delivery on operational projects, so the read on your business comes first, and the build follows from that, not the other way round.' }
+  ];
+
+  reveal(sectionId, i, base) {
+    const revealed = !!this.state.revealed[sectionId];
+    if (this.props.reduceMotion) return { ...base, opacity: 1, transform: 'none' };
+    return {
+      ...base,
+      opacity: revealed ? 1 : 0,
+      transform: revealed ? 'translateY(0)' : 'translateY(28px)',
+      transition: `opacity 0.8s cubic-bezier(.22,1,.36,1) ${i * 0.09}s, transform 0.8s cubic-bezier(.22,1,.36,1) ${i * 0.09}s`
+    };
+  }
+
+  renderVals() {
+    const C = this.COLORS;
+    const isMobile = this.state.isMobile;
+    const isDesktop = !isMobile;
+    const activeId = this.state.activeId;
+    const mobileMenuOpen = this.state.mobileMenuOpen;
+    const faqOpenIndex = this.state.faqOpenIndex;
+
+    const mobileLinkStyle = { color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: 17, fontWeight: 500, padding: '12px 4px', borderBottom: '1px solid rgba(255,255,255,0.08)' };
+
+    const railSections = this.sectionDefs.map((sec) => {
+      const active = activeId === sec.id;
+      return {
+        id: sec.id,
+        label: sec.label,
+        href: '#' + sec.id,
+        onClick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.scrollToId(sec.id); },
+        navLinkStyle: {
+          color: active ? C.sky : 'rgba(255,255,255,0.6)',
+          textDecoration: 'none',
+          fontSize: 14,
+          fontWeight: 500,
+          letterSpacing: '0.01em',
+          padding: '8px 4px',
+          transition: 'color 0.25s ease',
+          cursor: 'pointer'
+        },
+        railNodeStyle: {
+          width: active ? 9 : 6,
+          height: active ? 9 : 6,
+          borderRadius: '50%',
+          background: active ? '#57ACDF' : 'rgba(255,255,255,0.35)',
+          cursor: 'pointer',
+          transition: 'all 0.3s cubic-bezier(.22,1,.36,1)',
+          boxShadow: active ? '0 0 0 4px rgba(87,172,223,0.25)' : 'none'
+        }
+      };
+    });
+
+    const activeServiceKey = this.state.activeServiceKey;
+    const services = this.serviceDefs.map((svc) => ({
+      ...svc,
+      cardStyle: {
+        background: activeServiceKey === svc.key ? 'rgba(87,172,223,0.08)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${activeServiceKey === svc.key ? C.sky : C.borderDark}`,
+        borderRadius: 16, padding: '32px 28px', flex: '1 1 300px', minWidth: 260,
+        transition: 'transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, background 0.3s ease',
+        position: 'relative', display: 'flex', flexDirection: 'column'
+      },
+      ctaStyle: { marginTop: 18, alignSelf: 'flex-start', background: 'transparent', border: `1px solid ${C.sky}`, color: C.sky, borderRadius: 999, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'background 0.25s ease, color 0.25s ease' },
+      ctaLabel: activeServiceKey === svc.key ? 'Selected ↓' : 'Get started →',
+      onGetStarted: () => this.openServiceForm(svc.key)
+    }));
+
+    const activeDef = activeServiceKey ? this.serviceFormDefs[activeServiceKey] : null;
+    const activeData = activeServiceKey ? this.state.serviceFormData[activeServiceKey] : null;
+    const activeSent = activeServiceKey ? this.state.serviceFormSent[activeServiceKey] : false;
+    const activeServiceForm = activeDef ? {
+      title: activeDef.title,
+      onSubmit: this.submitServiceForm(activeServiceKey),
+      fields: activeDef.fields.map((f) => ({
+        key: f.key,
+        label: f.label,
+        isText: f.type === 'text',
+        isTextarea: f.type === 'textarea',
+        isSelect: f.type === 'select',
+        options: f.options || [],
+        value: activeData[f.key],
+        onChange: (e) => this.updateServiceField(activeServiceKey, f.key, e.target.value),
+        wrapStyle: { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.02em', textTransform: 'uppercase', gridColumn: f.type === 'textarea' ? '1 / -1' : 'auto' }
+      }))
+    } : null;
+
+    const proofThumbCopy = {
+      'NEXT Group': 'Drop a screenshot of nxtgrp.net',
+      'SlipSync': 'Drop a screenshot of SlipSync',
+      'RealtyAI': 'Drop a screenshot of RealtyAI'
+    };
+    const proofItems = this.proofDefs.map((p) => {
+      const retired = p.tag.indexOf('retired') > -1;
+      return {
+        ...p,
+        showLink: !retired,
+        thumbId: 'proof-' + p.name.toLowerCase().replace(/\s+/g, '-'),
+        thumbFit: p.name === 'RealtyAI' ? 'contain' : 'cover',
+        thumbPlaceholder: proofThumbCopy[p.name] || 'Drop a screenshot',
+        tagStyle: {
+          display: 'inline-block',
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+          color: retired ? C.mute : C.deep,
+          background: retired ? 'rgba(91,102,112,0.1)' : 'rgba(34,100,172,0.08)',
+          padding: '4px 10px',
+          borderRadius: 20,
+          marginBottom: 14
+        }
+      };
+    });
+
+    const faqItems = this.faqDefs.map((f, i) => {
+      const open = faqOpenIndex === i;
+      return {
+        ...f,
+        onToggle: () => this.toggleFaq(i),
+        iconStyle: {
+          fontSize: 20,
+          color: C.deep,
+          transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
+          transition: 'transform 0.35s cubic-bezier(.22,1,.36,1)',
+          flexShrink: 0
+        },
+        aStyle: {
+          maxHeight: open ? 240 : 0,
+          opacity: open ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'max-height 0.45s cubic-bezier(.22,1,.36,1), opacity 0.35s ease'
+        }
+      };
+    });
+
+    const burgerOpen = mobileMenuOpen;
+    const burgerBarBase = { display: 'block', width: 22, height: 2, background: '#fff', borderRadius: 2, transition: 'all 0.3s ease' };
+
+    return {
+      isMobile,
+      isDesktop,
+      showRail: isDesktop && this.props.showFlowRail !== false,
+      mobileMenuOpen,
+      formData: this.state.formData,
+      formSubmitted: this.state.formSubmitted,
+      formNotSubmitted: !this.state.formSubmitted,
+      railSections,
+      services,
+      hasActiveServiceForm: !!activeServiceForm,
+      activeServiceForm: activeServiceForm || { title: '', fields: [], onSubmit: () => {} },
+      activeServiceFormNotSent: !!activeServiceForm && !activeSent,
+      activeServiceFormSent: !!activeServiceForm && !!activeSent,
+      closeServiceForm: this.closeServiceForm,
+      proofItems,
+      faqItems,
+      activeScenario: this.calloutDefs[this.state.calloutIndex],
+      calloutCounterLabel: `${this.state.calloutIndex + 1} / ${this.calloutDefs.length}`,
+      calloutTouchStart: this.calloutTouchStart,
+      calloutTouchEnd: this.calloutTouchEnd,
+      calloutPrev: this.calloutPrev,
+      calloutNext: this.calloutNext,
+      calloutDots: this.calloutDefs.map((d, i) => ({
+        onClick: () => this.calloutGoTo(i),
+        dotStyle: { width: 7, height: 7, borderRadius: '50%', cursor: 'pointer', background: i === this.state.calloutIndex ? C.deep : C.border, transition: 'background 0.25s ease' }
+      })),
+
+      heroSectionRef: this.heroSectionRef,
+      whySectionRef: this.whySectionRef,
+      servicesSectionRef: this.servicesSectionRef,
+      proofSectionRef: this.proofSectionRef,
+      faqSectionRef: this.faqSectionRef,
+      contactSectionRef: this.contactSectionRef,
+      scrollToHero: this.scrollToHero,
+      scrollToWhy: this.scrollToWhy,
+      scrollToServices: this.scrollToServices,
+      scrollToProof: this.scrollToProof,
+      scrollToFaq: this.scrollToFaq,
+      scrollToContact: this.scrollToContact,
+      toggleMobileMenu: this.toggleMobileMenu,
+      handleSubmit: this.handleSubmit,
+      updateName: this.updateName,
+      updateEmail: this.updateEmail,
+      updateMessage: this.updateMessage,
+
+      navRef: this.navRef,
+      flowPathRef: this.flowPathRef,
+      flowDotRef: this.flowDotRef,
+      flowHeight: this.state.flowHeight || 1200,
+      flowViewBox: `0 0 200 ${this.state.flowHeight || 1200}`,
+      flowPathD: this.buildFlowPath(this.state.flowPoints, this.state.flowHeight || 1200),
+      flowPathColor: 'rgba(87,172,223,0.4)',
+      flowNodeStyle: { cursor: 'pointer', pointerEvents: 'auto' },
+      flowPoints: (this.state.flowPoints || []).map((pt) => {
+        const active = activeId === pt.id;
+        return {
+          ...pt,
+          radius: active ? 7 : 5,
+          fill: active ? C.sky : C.white,
+          stroke: active ? C.sky : C.mute,
+          onClick: () => this.scrollToId(pt.id)
+        };
+      }),
+
+      rootStyle: { position: 'relative', width: '100%', minHeight: '100vh', color: C.ink, background: C.white, overflowX: 'hidden' },
+
+      flowWrapStyle: { position: 'absolute', top: 0, right: 24, width: 200, height: (this.state.flowHeight || 1200), zIndex: 1, pointerEvents: 'none' },
+
+      navStyle: { position: 'fixed', top: 0, left: 0, right: 0, zIndex: 70, transition: 'background 0.35s ease, backdrop-filter 0.35s ease' },
+      navInnerStyle: { maxWidth: 1240, margin: '0 auto', padding: isMobile ? '16px 20px' : '18px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+      navLogoWrapStyle: { display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' },
+      navLogoChipStyle: { display: 'flex', alignItems: 'center' },
+      navLogoImgStyle: { height: 26, width: 'auto', display: 'block', filter: 'drop-shadow(0 1px 6px rgba(0,0,0,0.5)) brightness(1.15)' },
+      navLinksStyle: { display: 'flex', alignItems: 'center', gap: 28 },
+      navCtaStyle: { background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'transform 0.25s ease, box-shadow 0.25s ease', boxShadow: '0 4px 16px rgba(34,100,172,0.35)' },
+      navLinkHoverStyle: { color: '#fff' },
+
+      hamburgerBtnStyle: { background: 'none', border: 'none', display: 'flex', flexDirection: 'column', gap: 5, cursor: 'pointer', padding: 8 },
+      burgerBar0Style: { ...burgerBarBase, transform: burgerOpen ? 'translateY(7px) rotate(45deg)' : 'none' },
+      burgerBar1Style: { ...burgerBarBase, transform: burgerOpen ? 'scaleX(0)' : 'scaleX(1)' },
+      burgerBar2Style: { ...burgerBarBase, transform: burgerOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' },
+      mobileMenuStyle: { background: '#0B1624', padding: '8px 20px 24px', display: 'flex', flexDirection: 'column', gap: 4, animation: 'flowiq-fadeup 0.3s ease' },
+      mobileLinkStyle,
+      mobileNavCtaStyle: { marginTop: 14, background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 999, padding: '13px 20px', fontSize: 15, fontWeight: 600, cursor: 'pointer' },
+
+      heroStyle: { position: 'relative', minHeight: '100vh', background: `linear-gradient(180deg, #0D1D30, ${C.navy})`, backgroundImage: `linear-gradient(180deg, #0D1D30, ${C.navy}), linear-gradient(rgba(87,172,223,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(87,172,223,0.08) 1px, transparent 1px)`, backgroundSize: 'auto, 44px 44px, 44px 44px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden', padding: isMobile ? '120px 20px 80px' : '110px 60px 0', gap: 40 },
+      heroBlobA: { position: 'absolute', top: '10%', left: '-10%', width: 420, height: 420, borderRadius: '50%', background: `radial-gradient(circle, rgba(34,100,172,0.35), transparent 70%)`, filter: 'blur(10px)', animation: 'flowiq-drift-a 16s ease-in-out infinite' },
+      heroBlobB: { position: 'absolute', bottom: '5%', right: '-8%', width: 380, height: 380, borderRadius: '50%', background: `radial-gradient(circle, rgba(87,172,223,0.28), transparent 70%)`, filter: 'blur(10px)', animation: 'flowiq-drift-b 20s ease-in-out infinite' },
+      heroContentStyle: { position: 'relative', zIndex: 2, maxWidth: 640, width: '100%' },
+      heroBgImageWrapStyle: { position: 'absolute', inset: 0, zIndex: 0, WebkitMaskImage: 'radial-gradient(ellipse 60% 75% at 78% 45%, black 30%, transparent 78%)', maskImage: 'radial-gradient(ellipse 60% 75% at 78% 45%, black 30%, transparent 78%)' },
+      heroBgImageImgStyle: { width: '100%', height: '100%', objectFit: 'cover', opacity: 0.55, filter: 'saturate(0.7) brightness(0.9)' },
+      heroBgOverlayStyle: { position: 'absolute', inset: 0, zIndex: 1, background: `linear-gradient(100deg, ${C.navy} 30%, rgba(11,22,36,0.2) 65%, rgba(11,22,36,0.55) 100%)` },
+      heroEyebrowRevealStyle: this.reveal('hero', 0, { color: C.sky, fontSize: 13, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 22, display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'JetBrains Mono', monospace" }),
+      heroEyebrowTickStyle: { width: 16, height: 1, background: C.sky, display: 'inline-block' },
+      heroHeadlineRevealStyle: this.reveal('hero', 1, { color: '#fff', fontSize: isMobile ? 40 : 68, fontWeight: 800, lineHeight: 1.06, letterSpacing: '-0.02em', margin: '0 0 24px', maxWidth: isMobile ? '100%' : 560 }),
+      heroHeadlineAccent: { color: C.sky },
+      heroSubRevealStyle: this.reveal('hero', 2, { color: 'rgba(255,255,255,0.72)', fontSize: isMobile ? 17 : 19, lineHeight: 1.65, maxWidth: 520, margin: '0 0 36px', textWrap: 'pretty' }),
+      heroCtaRowRevealStyle: this.reveal('hero', 3, { display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8 }),
+      heroPrimaryBtnStyle: { background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 12, padding: '16px 28px', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 8px 26px rgba(34,100,172,0.4)', transition: 'transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s ease' },
+      heroSecondaryBtnStyle: { background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 12, padding: '16px 24px', fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'border-color 0.3s ease, background 0.3s ease' },
+      heroPrimaryBtnHoverStyle: { transform: 'translateY(-3px)', boxShadow: '0 14px 34px rgba(34,100,172,0.55)' },
+      heroSecondaryBtnHoverStyle: { borderColor: C.sky, background: 'rgba(87,172,223,0.1)' },
+      scrollCueStyle: { position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', width: 26, height: 42, borderRadius: 14, border: '2px solid rgba(255,255,255,0.35)', display: isMobile ? 'none' : 'flex', justifyContent: 'center', paddingTop: 8, cursor: 'pointer', zIndex: 2 },
+      scrollCueDotStyle: { width: 4, height: 8, borderRadius: 4, background: C.sky, animation: 'flowiq-pulse 1.8s ease-in-out infinite' },
+
+      sectionInnerStyle: { maxWidth: 1180, margin: '0 auto', padding: isMobile ? '90px 20px' : '130px 32px' },
+      sectionInnerNarrowStyle: { maxWidth: 820, margin: '0 auto', padding: isMobile ? '90px 20px' : '130px 32px' },
+
+      bodyLightStyle: { color: C.mute, fontSize: 17, lineHeight: 1.75, margin: '0 0 18px', maxWidth: 560, textWrap: 'pretty' },
+
+      whyStyle: { background: C.offwhite, position: 'relative', backgroundImage: `radial-gradient(${C.border} 1px, transparent 1px)`, backgroundSize: '28px 28px' },
+      whyEyebrowRevealStyle: this.reveal('why', 0, { color: C.deep, fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 18 }),
+      whyH2RevealStyle: this.reveal('why', 1, { color: C.ink, fontSize: isMobile ? 30 : 44, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.01em', margin: '0 0 20px', maxWidth: 780, textWrap: 'pretty' }),
+      whyGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1.1fr) minmax(0,0.9fr)', gap: isMobile ? 32 : 56, marginTop: 40, alignItems: 'start' },
+      whyTextColRevealStyle: this.reveal('why', 2, {}),
+      founderRowStyle: { display: 'flex', alignItems: 'center', gap: 14, marginTop: 22 },
+      founderPhotoStyle: { width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${C.white}`, boxShadow: '0 4px 16px rgba(28,39,51,0.18)' },
+      founderNameStyle: { fontSize: 15, fontWeight: 700, color: C.ink },
+      founderTitleStyle: { fontSize: 13, color: C.mute },
+      whyCtaStyle: { marginTop: 28, background: 'transparent', border: `1px solid ${C.deep}`, color: C.deep, borderRadius: 999, padding: '12px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'background 0.25s ease, color 0.25s ease' },
+      whyCtaHoverStyle: { background: C.deep, color: '#fff' },
+      whyCalloutCardRevealStyle: this.reveal('why', 3, { background: C.white, border: `1px solid ${C.border}`, borderRadius: 18, padding: '32px 30px', boxShadow: '0 12px 40px rgba(28,39,51,0.06)', position: 'relative' }),
+      calloutThumbWrapStyle: { width: '100%', aspectRatio: '16 / 9', borderRadius: 12, overflow: 'hidden', marginBottom: 20, background: C.offwhite },
+      calloutLabelStyle: { fontSize: 12, fontWeight: 700, color: C.deep, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 14 },
+      calloutTextStyle: { fontSize: 16.5, lineHeight: 1.7, color: C.ink, margin: '0 0 16px', textWrap: 'pretty' },
+      calloutFootStyle: { fontSize: 14, color: C.deep, fontWeight: 700, margin: 0 },
+      calloutLabelRowStyle: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+      calloutDotsStyle: { display: 'flex', gap: 7 },
+      calloutScenarioWrapStyle: { minHeight: 96, touchAction: 'pan-y' },
+      calloutNavRowStyle: { display: 'flex', alignItems: 'center', gap: 14, marginTop: 8 },
+      calloutNavBtnStyle: { background: C.offwhite, border: `1px solid ${C.border}`, color: C.deep, width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      calloutCounterStyle: { fontSize: 12, color: C.mute, fontFamily: "'JetBrains Mono', monospace" },
+      founderLinkedinBtnStyle: { marginLeft: 'auto', background: 'transparent', border: `1px solid ${C.deep}`, color: C.deep, borderRadius: 999, padding: '8px 16px', fontSize: 13, fontWeight: 700, textDecoration: 'none', transition: 'background 0.25s ease, color 0.25s ease' },
+      founderLinkedinBtnHoverStyle: { background: C.deep, color: '#fff' },
+
+      servicesStyle: { background: `linear-gradient(180deg, ${C.navy}, ${C.navy2})`, position: 'relative' },
+      servicesEyebrowRevealStyle: this.reveal('services', 0, { color: C.sky, fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 18 }),
+      servicesH2RevealStyle: this.reveal('services', 1, { color: '#fff', fontSize: isMobile ? 30 : 44, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.01em', margin: '0 0 20px', maxWidth: 780, textWrap: 'pretty' }),
+      servicesLeadRevealStyle: this.reveal('services', 2, { color: 'rgba(255,255,255,0.65)', fontSize: 17, maxWidth: 560, lineHeight: 1.7, margin: '0 0 48px', textWrap: 'pretty' }),
+      servicesGridStyle: { display: 'flex', flexWrap: 'wrap', gap: 22 },
+      serviceCardStyle: { background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.borderDark}`, borderRadius: 16, padding: '32px 28px', flex: '1 1 300px', minWidth: 260, transition: 'transform 0.45s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, background 0.3s ease', cursor: 'default', position: 'relative' },
+      serviceStepStyle: { fontSize: 12, fontWeight: 600, color: C.sky, letterSpacing: '0.05em', marginBottom: 16, fontFamily: "'JetBrains Mono', monospace" },
+      serviceIconStyle: { fontSize: 26, color: C.sky, marginBottom: 14 },
+      serviceTitleStyle: { fontSize: 21, fontWeight: 700, color: '#fff', margin: '0 0 12px' },
+      serviceDescStyle: { fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: '0 0 20px', minHeight: 100, textWrap: 'pretty' },
+      servicePriceStyle: { fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" },
+      serviceNoteStyle: { fontSize: 13, color: C.sky },
+      serviceCardHoverStyle: { transform: 'translateY(-6px)', borderColor: C.sky },
+      serviceCtaHoverStyle: { background: C.sky, color: C.navy },
+      servicesOwnStripRevealStyle: this.reveal('services', 3, { marginTop: 48, borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: 32, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 20 }),
+      ownStripTextStyle: { color: 'rgba(255,255,255,0.85)', fontSize: 18, lineHeight: 1.6, textWrap: 'pretty', flex: '1 1 380px' },
+      highlightSkyStyle: { color: C.sky },
+      ownStripCtaStyle: { flexShrink: 0, background: 'transparent', border: `1px solid rgba(255,255,255,0.3)`, color: '#fff', borderRadius: 999, padding: '12px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'border-color 0.25s ease, background 0.25s ease' },
+      ownStripCtaHoverStyle: { background: C.sky, borderColor: C.sky, color: C.navy },
+
+      serviceFormPanelStyle: { marginTop: 32, background: 'rgba(87,172,223,0.06)', border: `1px solid ${C.sky}`, borderRadius: 18, padding: '30px 32px' },
+      serviceFormHeaderRowStyle: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20, marginBottom: 22 },
+      serviceFormEyebrowStyle: { fontSize: 12, fontWeight: 700, color: C.sky, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 },
+      serviceFormTitleStyle: { fontSize: 22, fontWeight: 800, color: '#fff', margin: 0 },
+      serviceFormCloseStyle: { background: 'rgba(255,255,255,0.08)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: 14, flexShrink: 0 },
+      serviceFormGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 18 },
+      serviceInputStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '12px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none', marginTop: 6, width: '100%' },
+      serviceFormSubmitStyle: { gridColumn: '1 / -1', marginTop: 4, background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 12, padding: '14px 22px', fontSize: 15, fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-start', justifySelf: 'flex-start' },
+      serviceFormSentStyle: { color: 'rgba(255,255,255,0.8)', fontSize: 15, lineHeight: 1.6 },
+
+      proofStyle: { background: C.white, position: 'relative' },
+      proofCornerBeforeStyle: { content: '""', position: 'absolute', top: 10, left: 10, width: 12, height: 12, borderTop: `2px solid ${C.deep}`, borderLeft: `2px solid ${C.deep}`, opacity: 0.35 },
+      proofCornerAfterStyle: { content: '""', position: 'absolute', bottom: 10, right: 10, width: 12, height: 12, borderBottom: `2px solid ${C.deep}`, borderRight: `2px solid ${C.deep}`, opacity: 0.35 },
+      proofEyebrowRevealStyle: this.reveal('proof', 0, { color: C.deep, fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 18 }),
+      proofH2RevealStyle: this.reveal('proof', 1, { color: C.ink, fontSize: isMobile ? 30 : 44, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.01em', margin: '0 0 20px', maxWidth: 780, textWrap: 'pretty' }),
+      proofGridStyle: { display: 'flex', flexWrap: 'wrap', gap: 22, marginTop: 40 },
+      proofCardStyle: { display: 'block', background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: '20px 22px 26px', flex: '1 1 300px', minWidth: 260, transition: 'transform 0.4s cubic-bezier(.22,1,.36,1), box-shadow 0.4s ease, border-color 0.3s ease', boxShadow: '0 1px 2px rgba(28,39,51,0.04)', position: 'relative' },
+      proofThumbWrapStyle: { width: '100%', aspectRatio: '16 / 10', borderRadius: 10, overflow: 'hidden', marginBottom: 18, background: C.offwhite },
+      proofTitleStyle: { fontSize: 20, fontWeight: 700, color: C.ink, margin: '0 0 10px' },
+      proofDescStyle: { fontSize: 15, color: C.mute, lineHeight: 1.65, margin: '0 0 18px', textWrap: 'pretty' },
+      proofLinkStyle: { fontSize: 14, fontWeight: 700, color: C.deep, textDecoration: 'none', display: 'inline-block' },
+      proofLinkHoverStyle: { color: C.sky },
+      proofCardHoverStyle: { transform: 'translateY(-4px)', boxShadow: '0 16px 40px rgba(28,39,51,0.12)', borderColor: C.sky },
+      proofCtaRowStyle: { marginTop: 40, display: 'flex', justifyContent: 'center' },
+      proofCtaStyle: { background: C.deep, color: '#fff', border: 'none', borderRadius: 999, padding: '14px 26px', fontSize: 15, fontWeight: 700, cursor: 'pointer', transition: 'background 0.25s ease, transform 0.25s ease' },
+      proofCtaHoverStyle: { background: C.sky, transform: 'translateY(-2px)' },
+
+      faqStyle: { background: C.offwhite, backgroundImage: `radial-gradient(${C.border} 1px, transparent 1px)`, backgroundSize: '28px 28px' },
+      faqEyebrowRevealStyle: this.reveal('faq', 0, { color: C.deep, fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 18 }),
+      faqH2RevealStyle: this.reveal('faq', 1, { color: C.ink, fontSize: isMobile ? 30 : 44, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.01em', margin: '0 0 20px', maxWidth: 780, textWrap: 'pretty' }),
+      faqListStyle: { marginTop: 36, display: 'flex', flexDirection: 'column' },
+      faqItemStyle: { borderBottom: `1px solid ${C.border}` },
+      faqQStyle: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '22px 4px', cursor: 'pointer', fontSize: 17, fontWeight: 600, color: C.deep },
+      faqH2AccentStyle: { color: C.sky },
+      faqAInnerStyle: { paddingBottom: 22, fontSize: 15.5, color: C.mute, lineHeight: 1.7, maxWidth: 700, textWrap: 'pretty' },
+      faqQHoverStyle: { color: C.deep },
+      faqCtaRowStyle: { marginTop: 40, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' },
+      faqCtaTextStyle: { fontSize: 16, color: C.mute },
+      faqCtaBtnStyle: { background: C.deep, color: '#fff', border: 'none', borderRadius: 999, padding: '12px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'background 0.25s ease, transform 0.25s ease' },
+      faqCtaBtnHoverStyle: { background: C.sky, transform: 'translateY(-2px)' },
+
+      contactStyle: { background: `radial-gradient(ellipse at 80% 10%, #142744 0%, ${C.navy} 55%)`, position: 'relative', overflow: 'hidden' },
+      contactBlobA: { position: 'absolute', top: '-10%', right: '-5%', width: 460, height: 460, borderRadius: '50%', background: `radial-gradient(circle, rgba(87,172,223,0.3), transparent 70%)`, animation: 'flowiq-drift-a 18s ease-in-out infinite' },
+      contactEyebrowRevealStyle: this.reveal('contact', 0, { color: C.sky, fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 18 }),
+      contactH2RevealStyle: this.reveal('contact', 1, { color: '#fff', fontSize: isMobile ? 30 : 44, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.01em', margin: '0 0 20px', maxWidth: 780, textWrap: 'pretty' }),
+      contactGridStyle: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: isMobile ? 36 : 56, marginTop: 40 },
+      contactFormWrapRevealStyle: this.reveal('contact', 2, {}),
+      formStyle: { display: 'flex', flexDirection: 'column', gap: 18 },
+      labelStyle: { display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.02em', textTransform: 'uppercase' },
+      inputStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '14px 16px', color: '#fff', fontSize: 15, fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.25s ease, background 0.25s ease' },
+      textareaStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '14px 16px', color: '#fff', fontSize: 15, fontFamily: 'inherit', minHeight: 110, resize: 'vertical', outline: 'none', transition: 'border-color 0.25s ease, background 0.25s ease' },
+      submitBtnStyle: { marginTop: 6, background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 12, padding: '16px 24px', fontSize: 16, fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-start', boxShadow: '0 8px 26px rgba(34,100,172,0.4)', transition: 'transform 0.3s ease' },
+      formSuccessStyle: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 16, padding: '40px 32px' },
+      formSuccessTitleStyle: { fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 10 },
+      formSuccessTextStyle: { fontSize: 15.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 },
+      contactInfoColStyle: { display: 'flex', flexDirection: 'column', gap: 4, paddingTop: isMobile ? 0 : 6 },
+      contactInfoLabelStyle: { fontSize: 12, fontWeight: 700, color: C.sky, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 },
+      contactInfoLinkStyle: { color: '#fff', fontSize: 19, fontWeight: 700, textDecoration: 'none', marginBottom: 6, display: 'block' },
+      contactInfoNoteStyle: { fontSize: 12.5, color: 'rgba(255,255,255,0.35)', fontStyle: 'italic', marginTop: 4 },
+      contactDividerStyle: { height: 1, background: 'rgba(255,255,255,0.12)', margin: '28px 0 22px' },
+      contactInfoTextStyle: { fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0, textWrap: 'pretty' },
+
+      footerStyle: { borderTop: '1px solid rgba(255,255,255,0.1)', padding: isMobile ? '28px 20px' : '32px 32px', display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 2 },
+      footerLogoChipStyle: { display: 'inline-flex', alignItems: 'center' },
+      footerLogoImgStyle: { height: 24, width: 'auto', display: 'block', filter: 'drop-shadow(0 1px 6px rgba(0,0,0,0.5)) brightness(1.15)' },
+      footerTextStyle: { fontSize: 13, color: 'rgba(255,255,255,0.4)' }
+    };
+  }
+}
+
+</script>
+</body>
+</html>
