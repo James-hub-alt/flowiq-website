@@ -435,6 +435,12 @@
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;showFlowRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;defaultOpenFaq&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;min&quot;:-1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+function readCookie(name) {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 class Component extends DCLogic {
 
   COLORS = {
@@ -450,7 +456,15 @@ class Component extends DCLogic {
     borderDark: 'rgba(255,255,255,0.12)'
   };
 
+  FALLBACK_USD_RATE = 0.0621;
+  USD_MARKUP = 1.25;
+
   state = {
+    currency: (() => {
+      const country = readCookie('flowiq_country');
+      return country && country !== 'ZA' ? 'USD' : 'ZAR';
+    })(),
+    usdRate: 0.0621,
     isMobile: (typeof window !== 'undefined' && window.innerWidth < 900),
     scrolled: false,
     mobileMenuOpen: false,
@@ -492,7 +506,27 @@ class Component extends DCLogic {
     this.handleScroll();
     setTimeout(this.measureFlow, 250);
     window.addEventListener('load', this.measureFlow);
+    this.refreshExchangeRate();
   }
+
+  refreshExchangeRate = () => {
+    fetch('https://api.frankfurter.dev/v1/latest?base=ZAR&symbols=USD')
+      .then((r) => r.json())
+      .then((data) => {
+        const rate = data && data.rates && data.rates.USD;
+        if (rate) this.setState({ usdRate: rate });
+      })
+      .catch(() => { /* keep fallback rate */ });
+  };
+
+  formatMoney = (zar, plus) => {
+    if (this.state.currency !== 'USD') {
+      return 'R' + Math.round(zar).toLocaleString('en-US') + (plus ? '+' : '');
+    }
+    const usd = zar * this.USD_MARKUP * this.state.usdRate;
+    const rounded = Math.round(usd / 5) * 5;
+    return '$' + rounded.toLocaleString('en-US') + (plus ? '+' : '');
+  };
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
@@ -737,7 +771,9 @@ class Component extends DCLogic {
       icon: '◎',
       title: 'Systems Review',
       desc: 'A short, paid look at how your business runs. A real map of the process, plainly written: what\u2019s broken, what it\u2019s costing you, what would fix it.',
-      price: 'R5,000 – R7,500 flat',
+      priceFrom: 5000,
+      priceTo: 7500,
+      priceSuffix: 'flat',
       note: '50% credits toward a Build if you sign within 60 days.'
     },
     {
@@ -746,8 +782,12 @@ class Component extends DCLogic {
       icon: '◈',
       title: 'Custom Websites',
       desc: 'Fully custom-coded, no template, no site builder. Already proven, not a promise.',
-      price: 'R10,000 – R85,000+ \nproject fee',
-      note: 'Optional retainer, R1,500 – R2,500/month.'
+      priceFrom: 10000,
+      priceTo: 85000,
+      priceToPlus: true,
+      priceSuffix: 'project fee',
+      retainerFrom: 1500,
+      retainerTo: 2500
     },
     {
       key: 'business-tools',
@@ -807,9 +847,9 @@ class Component extends DCLogic {
   ];
 
   faqDefs = [
-    { q: 'What exactly do I get from a Systems Review?', a: 'A discovery conversation, a written map of your current process, and a plain recommendation of what\u2019s broken, what it\u2019s costing you, and what system would fix it. Flat fee: R5,000–R7,500. If you sign a Build within 60 days, 50% of it credits toward that project.' },
+    { q: 'What exactly do I get from a Systems Review?', a: (fmt) => `A discovery conversation, a written map of your current process, and a plain recommendation of what\u2019s broken, what it\u2019s costing you, and what system would fix it. Flat fee: ${fmt(5000)}–${fmt(7500)}. If you sign a Build within 60 days, 50% of it credits toward that project.` },
     { q: 'Do I own what you build?', a: 'Yes, outright. No forced subscription, no vendor lock-in. That\u2019s true across Systems Reviews, websites, and internal tools.' },
-    { q: 'What does a website cost?', a: 'From R10,000 for a single-page custom build up to R85,000+ for a multi-page, high-interaction build with full custom interactions. An optional retainer (R1,500–R2,500/month) covers hosting and updates, since there\u2019s no CMS and changes run through us.' },
+    { q: 'What does a website cost?', a: (fmt) => `From ${fmt(10000)} for a single-page custom build up to ${fmt(85000, true)} for a multi-page, high-interaction build with full custom interactions. An optional retainer (${fmt(1500)}–${fmt(2500)}/month) covers hosting and updates, since there\u2019s no CMS and changes run through us.` },
     { q: 'How fast is a build, really?', a: 'Faster than a traditional agency, since we build with AI-native tools rather than a multi-month timeline. Exact timing is quoted per scope once we\u2019ve diagnosed the work.' },
     { q: 'Have you built tracking tools for other companies yet?', a: 'They\u2019re built and running inside NEXT Group today, our own consultancy, and we\u2019re now bringing that same system to outside clients for the first time.' },
     { q: 'Why "diagnose before build"?', a: 'Because most agencies guess at requirements. FlowIQ\u2019s founder has managed real cost and delivery on operational projects, so the read on your business comes first, and the build follows from that, not the other way round.' }
@@ -868,6 +908,12 @@ class Component extends DCLogic {
     const activeServiceKey = this.state.activeServiceKey;
     const services = this.serviceDefs.map((svc) => ({
       ...svc,
+      price: svc.priceFrom != null
+        ? `${this.formatMoney(svc.priceFrom)} – ${this.formatMoney(svc.priceTo, svc.priceToPlus)}${svc.priceSuffix ? ' ' + svc.priceSuffix : ''}`
+        : svc.price,
+      note: svc.retainerFrom != null
+        ? `Optional retainer, ${this.formatMoney(svc.retainerFrom)} – ${this.formatMoney(svc.retainerTo)}/month.`
+        : svc.note,
       cardStyle: {
         background: activeServiceKey === svc.key ? 'rgba(87,172,223,0.08)' : 'rgba(255,255,255,0.04)',
         border: `1px solid ${activeServiceKey === svc.key ? C.sky : C.borderDark}`,
@@ -935,6 +981,7 @@ class Component extends DCLogic {
       const open = faqOpenIndex === i;
       return {
         ...f,
+        a: typeof f.a === 'function' ? f.a(this.formatMoney) : f.a,
         onToggle: () => this.toggleFaq(i),
         iconStyle: {
           fontSize: 20,

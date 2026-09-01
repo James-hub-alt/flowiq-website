@@ -1,0 +1,7 @@
+{
+  "name": "flowiq-website",
+  "private": true,
+  "dependencies": {
+    "@vercel/functions": "^3.9.5"
+  }
+}
