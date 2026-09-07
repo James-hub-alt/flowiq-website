@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://www.flowiq.pro/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="FlowIQ — Systems and software for SMBs, built by people, not templates.">
+<meta property="og:image:alt" content="FlowIQ: Systems and software for SMBs, built by people, not templates.">
 <meta property="og:locale" content="en_ZA">
 
 <!-- Twitter Card -->
@@ -35,7 +35,7 @@
 <meta name="twitter:title" content="FlowIQ | Custom Business Systems &amp; Websites for SA SMBs">
 <meta name="twitter:description" content="FlowIQ diagnoses how your business runs, then builds the exact system it needs: custom websites, internal tools and workflow automation for South African SMBs.">
 <meta name="twitter:image" content="https://www.flowiq.pro/assets/og-image.png">
-<meta name="twitter:image:alt" content="FlowIQ — Systems and software for SMBs, built by people, not templates.">
+<meta name="twitter:image:alt" content="FlowIQ: Systems and software for SMBs, built by people, not templates.">
 
 <!-- Structured data -->
 <script type="application/ld+json">
@@ -318,7 +318,7 @@
             </form>
           </sc-if>
           <sc-if value="{{ activeServiceFormSent }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ serviceFormSentStyle }}">Thanks — that's on its way to hello@flowiq.pro. We'll get back to you shortly.</div>
+            <div style="{{ serviceFormSentStyle }}">Thanks! That's on its way to hello@flowiq.pro. We'll get back to you shortly.</div>
           </sc-if>
         </div>
       </sc-if>
@@ -672,7 +672,7 @@ class Component extends DCLogic {
     try {
       await this.submitToServer({
         formType: 'Contact form',
-        subject: 'New contact form enquiry — FlowIQ website',
+        subject: 'New enquiry from the FlowIQ website contact form',
         replyTo: email,
         website: this.state.honeypot,
         fields: { Name: name, Email: email, 'What are you trying to fix?': message }
