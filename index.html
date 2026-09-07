@@ -168,6 +168,7 @@
           <sc-for list="{{ railSections }}" as="sec" hint-placeholder-count="6">
             <a onClick="{{ sec.onClick }}" href="{{ sec.href }}" style="{{ sec.navLinkStyle }}" style-hover="{{ navLinkHoverStyle }}">{{ sec.label }}</a>
           </sc-for>
+          <a href="/what-the-flow/" style="{{ blogNavLinkStyle }}" style-hover="{{ navLinkHoverStyle }}">What The Flow</a>
           <button onClick="{{ scrollToContact }}" style="{{ navCtaStyle }}">Book a Review</button>
         </div>
       </sc-if>
@@ -186,6 +187,7 @@
         <sc-for list="{{ railSections }}" as="sec" hint-placeholder-count="6">
           <a onClick="{{ sec.onClick }}" href="{{ sec.href }}" style="{{ mobileLinkStyle }}">{{ sec.label }}</a>
         </sc-for>
+        <a href="/what-the-flow/" style="{{ mobileLinkStyle }}">What The Flow</a>
         <button onClick="{{ scrollToContact }}" style="{{ mobileNavCtaStyle }}">Book a Review</button>
       </div>
     </sc-if>
@@ -1084,6 +1086,7 @@ class Component extends DCLogic {
       navLogoImgStyle: { height: 26, width: 'auto', display: 'block', filter: 'drop-shadow(0 1px 6px rgba(0,0,0,0.5)) brightness(1.15)' },
       navLinksStyle: { display: 'flex', alignItems: 'center', gap: 28 },
       navCtaStyle: { background: `linear-gradient(120deg, ${C.deep}, ${C.sky})`, color: '#fff', border: 'none', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'transform 0.25s ease, box-shadow 0.25s ease', boxShadow: '0 4px 16px rgba(34,100,172,0.35)' },
+      blogNavLinkStyle: { color: 'rgba(255,255,255,0.6)', textDecoration: 'none', fontSize: 14, fontWeight: 500, letterSpacing: '0.01em', padding: '8px 4px', transition: 'color 0.25s ease', cursor: 'pointer' },
       navLinkHoverStyle: { color: '#fff' },
 
       hamburgerBtnStyle: { background: 'none', border: 'none', display: 'flex', flexDirection: 'column', gap: 5, cursor: 'pointer', padding: 8 },
