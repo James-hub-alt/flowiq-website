@@ -49,7 +49,7 @@
   "description": "FlowIQ diagnoses how a small or medium business actually runs, then builds the exact system it needs: custom websites, internal tools, and workflow automation. Founded by James Russwurm.",
   "email": "hello@flowiq.pro",
   "areaServed": { "@type": "Country", "name": "South Africa" },
-  "priceRange": "R5,000 - R85,000+",
+  "priceRange": "R3,000 - R85,000+",
   "founder": {
     "@type": "Person",
     "name": "James Russwurm",
@@ -60,7 +60,7 @@
     {
       "@type": "Offer",
       "itemOffered": { "@type": "Service", "name": "Systems Review", "description": "A short, paid diagnostic of how a business runs: a real map of the process, what is broken, what it is costing, and what would fix it." },
-      "priceSpecification": { "@type": "PriceSpecification", "minPrice": 5000, "maxPrice": 7500, "priceCurrency": "ZAR" }
+      "priceSpecification": { "@type": "PriceSpecification", "minPrice": 3000, "maxPrice": 7500, "priceCurrency": "ZAR" }
     },
     {
       "@type": "Offer",
@@ -79,7 +79,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "What exactly do I get from a Systems Review?", "acceptedAnswer": { "@type": "Answer", "text": "A discovery conversation, a written map of your current process, and a plain recommendation of what is broken, what it is costing you, and what system would fix it. Flat fee: R5,000-R7,500. If you sign a Build within 60 days, 50% of it credits toward that project." } },
+    { "@type": "Question", "name": "What exactly do I get from a Systems Review?", "acceptedAnswer": { "@type": "Answer", "text": "A discovery conversation, a written map of your current process, and a plain recommendation of what is broken, what it is costing you, and what system would fix it. Flat fee: R3,000-R7,500. If you sign a Build within 60 days, 50% of it credits toward that project." } },
     { "@type": "Question", "name": "Do I own what you build?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, outright. No forced subscription, no vendor lock-in. That is true across Systems Reviews, websites, and internal tools." } },
     { "@type": "Question", "name": "What does a website cost?", "acceptedAnswer": { "@type": "Answer", "text": "From R8,000 for a single-page custom build up to R85,000+ for a multi-page, high-interaction build with full custom interactions. An optional retainer (R1,500-R2,500/month) covers hosting and updates, since there is no CMS and changes run through us." } },
     { "@type": "Question", "name": "How fast is a build, really?", "acceptedAnswer": { "@type": "Answer", "text": "Faster than a traditional agency, since we build with AI-native tools rather than a multi-month timeline. Exact timing is quoted per scope once we have diagnosed the work." } },
@@ -773,7 +773,7 @@ class Component extends DCLogic {
       icon: '◎',
       title: 'Systems Review',
       desc: 'A short, paid look at how your business runs. A real map of the process, plainly written: what\u2019s broken, what it\u2019s costing you, what would fix it.',
-      priceFrom: 5000,
+      priceFrom: 3000,
       priceTo: 7500,
       priceSuffix: 'flat',
       note: '50% credits toward a Build if you sign within 60 days.'
@@ -849,7 +849,7 @@ class Component extends DCLogic {
   ];
 
   faqDefs = [
-    { q: 'What exactly do I get from a Systems Review?', a: (fmt) => `A discovery conversation, a written map of your current process, and a plain recommendation of what\u2019s broken, what it\u2019s costing you, and what system would fix it. Flat fee: ${fmt(5000)}–${fmt(7500)}. If you sign a Build within 60 days, 50% of it credits toward that project.` },
+    { q: 'What exactly do I get from a Systems Review?', a: (fmt) => `A discovery conversation, a written map of your current process, and a plain recommendation of what\u2019s broken, what it\u2019s costing you, and what system would fix it. Flat fee: ${fmt(3000)}–${fmt(7500)}. If you sign a Build within 60 days, 50% of it credits toward that project.` },
     { q: 'Do I own what you build?', a: 'Yes, outright. No forced subscription, no vendor lock-in. That\u2019s true across Systems Reviews, websites, and internal tools.' },
     { q: 'What does a website cost?', a: (fmt) => `From ${fmt(8000)} for a single-page custom build up to ${fmt(85000, true)} for a multi-page, high-interaction build with full custom interactions. An optional retainer (${fmt(1500)}–${fmt(2500)}/month) covers hosting and updates, since there\u2019s no CMS and changes run through us.` },
     { q: 'How fast is a build, really?', a: 'Faster than a traditional agency, since we build with AI-native tools rather than a multi-month timeline. Exact timing is quoted per scope once we\u2019ve diagnosed the work.' },
